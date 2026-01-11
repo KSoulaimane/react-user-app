@@ -1,23 +1,22 @@
 import { use, useEffect, useState } from "react";
-
+import { fetchUsers, deleteUser, updateUser } from "../api/UserApi";
 const UserTable = () => {
     const [users, setUsers] = useState([]);
     const [userEditingId, setUserEditingId] = useState(null);
     const [userEdited, setUserEdited] = useState({});
 
-    const fetchUsers = async () => {
+    const loadUsers = async () => {
         try{
-            const response = await fetch("http://localhost:8080/api/users");
-            const data = await response.json();
+            const data = await fetchUsers();
             setUsers(data);
-        }catch (error){
-            console.error("erreur en recuperant les utilisateur", error);
+        }catch(error){
+            console.log("Error gettinng data", error)
         }
-    };
+    }
 
-    const deleteUser = async (id) => {
+    const handleDeleteUser = async (id) => {
         try{
-            await fetch(`http://localhost:8080/api/users/id/${id}`, {method: "DELETE",});
+            await deleteUser(id);
             setUsers(users.filter(user => user.id !== id));
         }catch(error){
             console.error("erreur en supprimant l'utilisateur", error);
@@ -29,23 +28,16 @@ const UserTable = () => {
         setUserEdited({...user});
     }
 
-    const saveUser = async () => {
+    const handleUpdateUser = async () => {
         try{
-            await fetch(`http://localhost:8080/api/users/id/${userEditingId}`, {
-                method: "PUT",
-                headers: {
-                    "content-type": "application/json",
-                },
-                body: JSON.stringify(userEdited)
-            });
-
+            const updatedUser = await updateUser(userEditingId, userEdited);
             setUsers(
                 users.map( (u) =>
-                    u.id == userEditingId ? userEdited : u
+                    u.id == userEditingId ? updatedUser : u
                 )
             );
-
             setUserEditingId(null);
+
         }catch(error){
             console.error("erreur en modifiant l'utilisateur", error)
         }
@@ -59,7 +51,7 @@ const UserTable = () => {
     }
 
     useEffect(() => {
-        fetchUsers();
+        loadUsers();
     }, []);
 
     return (
@@ -136,7 +128,7 @@ const UserTable = () => {
                             <td>
                                 {userEditingId == user.id ? (
                                     <>
-                                        <button onClick={saveUser}>
+                                        <button onClick={handleUpdateUser}>
                                             Save
                                         </button>
                                         <button onClick={() => setUserEditingId(null)}>
@@ -148,7 +140,7 @@ const UserTable = () => {
                                         <button onClick={() => startEditing(user)}>
                                             Update
                                         </button>
-                                        <button onClick={() => deleteUser(user.id)}>
+                                        <button onClick={() => handleDeleteUser(user.id)}>
                                             supprimer
                                         </button>
                                     </>
