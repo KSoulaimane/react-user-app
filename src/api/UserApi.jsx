@@ -33,3 +33,19 @@ export const updateUser = async (id, user) => {
     return response.json();
 
 }
+
+export const createUser = async (user) => {
+    const response = await fetch(`${BASE_URL}`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify(user)
+    });
+
+    if(!response.ok){
+        throw new Error("Erreur de creation de user")
+    }
+
+    return response.json();
+}

@@ -1,9 +1,12 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchUsers, deleteUser, updateUser } from "../api/UserApi";
+import { useNavigate } from "react-router-dom";
+
 const UserTable = () => {
     const [users, setUsers] = useState([]);
     const [userEditingId, setUserEditingId] = useState(null);
     const [userEdited, setUserEdited] = useState({});
+    const navigate = useNavigate();
 
     const loadUsers = async () => {
         try{
@@ -57,6 +60,7 @@ const UserTable = () => {
     return (
         <div>
             <h2>Liste des utilisateurs</h2>
+            <button onClick={() => navigate("/form")}>Ajouter</button>
             <table border="1" cellPadding="10">
                 <thead>
                     <tr>
