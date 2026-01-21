@@ -1,19 +1,31 @@
 import { useEffect, useState } from "react";
-import { fetchUsers, deleteUser, updateUser } from "../api/UserApi";
+import { fetchUsers, deleteUser, updateUser, fetchColumnsName } from "../api/UserApi";
 import { useNavigate } from "react-router-dom";
 
 const UserTable = () => {
     const [users, setUsers] = useState([]);
     const [userEditingId, setUserEditingId] = useState(null);
     const [userEdited, setUserEdited] = useState({});
+    const [columns, setColumns] = useState([]);
+    const [sortField, setSortField] = useState("id");
+    const [direction, setDirection] = useState("asc");
     const navigate = useNavigate();
 
     const loadUsers = async () => {
         try{
-            const data = await fetchUsers();
+            const data = await fetchUsers(sortField, direction);
             setUsers(data);
         }catch(error){
             console.log("Error gettinng data", error)
+        }
+    }
+
+    const columnName = async () =>{
+        try{
+            const data = await fetchColumnsName();
+            setColumns(data);
+        }catch(error){
+            console.log("Error gettinng column name data", error)
         }
     }
 
@@ -53,14 +65,28 @@ const UserTable = () => {
         })
     }
 
+    const handleSortField = (e) => {
+        setSortField(e.target.value);
+    }
+
     useEffect(() => {
         loadUsers();
-    }, []);
+        columnName()
+    }, [sortField, direction]);
 
     return (
         <div>
             <h2>Liste des utilisateurs</h2>
             <button onClick={() => navigate("/form")}>Ajouter</button>
+            <select defaultValue={columns[0]} onChange={handleSortField}>
+                {
+                    columns.map( (c, index) => <option key={index} value={c}>{c}</option>)
+                }
+            </select>
+            <select value={direction} onChange={(e) => setDirection(e.target.value)}>
+                <option value="ASC">Ascendant</option>
+                <option value="DESC">Descendant</option>
+            </select>
             <table border="1" cellPadding="10">
                 <thead>
                     <tr>

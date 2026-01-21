@@ -1,12 +1,22 @@
 const BASE_URL = "http://localhost:8080/api/users";
 
-export const fetchUsers = async () => {
-    const response = await fetch(BASE_URL);
+export const fetchUsers = async (sortField, direction) => {
+    const url = `${BASE_URL}?sortField=${sortField}&direction=${direction}`;
+    console.log("FETCH URL =>", url);  
+    const response = await fetch(url);
     if(!response.ok){
         throw new Error("Erreur lors du chargement des utilisateurs");
     }
     return response.json();
 };
+
+export const fetchColumnsName = async () => {
+    const response = await fetch(`${BASE_URL}/columns`);
+    if(!response.ok){
+        throw new Error("Erreur lors du chargement des colonnes");
+    }
+    return response.json();
+}
 
 export const deleteUser = async (id) => {
     const response = await fetch(`${BASE_URL}/${id}`, {method: "DELETE",});
