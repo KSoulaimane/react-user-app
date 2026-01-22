@@ -9,11 +9,12 @@ const UserTable = () => {
     const [columns, setColumns] = useState([]);
     const [sortField, setSortField] = useState("id");
     const [direction, setDirection] = useState("asc");
+    const [search, setSearch] = useState("");
     const navigate = useNavigate();
 
     const loadUsers = async () => {
         try{
-            const data = await fetchUsers(sortField, direction);
+            const data = await fetchUsers(search, sortField, direction);
             setUsers(data);
         }catch(error){
             console.log("Error gettinng data", error)
@@ -72,11 +73,13 @@ const UserTable = () => {
     useEffect(() => {
         loadUsers();
         columnName()
-    }, [sortField, direction]);
+    }, [search, sortField, direction]);
 
     return (
         <div>
             <h2>Liste des utilisateurs</h2>
+            <input type="text" placeholder="Saisie"     style={{ marginBottom: "10px", padding: "5px", width: "250px" }}
+ value={search} onChange={(e) => setSearch(e.target.value)}/>
             <button onClick={() => navigate("/form")}>Ajouter</button>
             <select defaultValue={columns[0]} onChange={handleSortField}>
                 {

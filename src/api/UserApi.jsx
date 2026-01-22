@@ -1,7 +1,7 @@
 const BASE_URL = "http://localhost:8080/api/users";
 
-export const fetchUsers = async (sortField, direction) => {
-    const url = `${BASE_URL}?sortField=${sortField}&direction=${direction}`;
+export const fetchUsers = async (search, sortField, direction) => {
+    const url = `${BASE_URL}?search=${search}&sortField=${sortField}&direction=${direction}`;
     console.log("FETCH URL =>", url);  
     const response = await fetch(url);
     if(!response.ok){
