@@ -78,8 +78,9 @@ const UserTable = () => {
     return (
         <div>
             <h2>Liste des utilisateurs</h2>
-            <input type="text" placeholder="Saisie"     style={{ marginBottom: "10px", padding: "5px", width: "250px" }}
- value={search} onChange={(e) => setSearch(e.target.value)}/>
+            <input type="text" placeholder="Saisie" style={{ marginBottom: "10px", padding: "5px", width: "250px" }}
+                value={search} onChange={(e) => setSearch(e.target.value)}
+            />
             <button onClick={() => navigate("/form")}>Ajouter</button>
             <select defaultValue={columns[0]} onChange={handleSortField}>
                 {
